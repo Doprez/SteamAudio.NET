@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<Platforms>AnyCPU</Platforms>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AssemblyName>SteamAudio.NET</AssemblyName>
+		<RootNamespace>SteamAudio</RootNamespace>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+</Project>
