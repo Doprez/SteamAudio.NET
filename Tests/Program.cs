@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Silk.NET.OpenAL;
@@ -39,16 +40,15 @@ namespace Tests
 			Console.WriteLine($"Working Directory: '{Path.GetFullPath(".")}'.");
 			Console.WriteLine($"Launch Arguments: '{string.Join(' ', args)}'.");
 
+			IntPtr tempInterlacingBuffer = IntPtr.Zero;
+
 			try {
 				var stopwatch = new Stopwatch();
 				byte[] bytes = LoadRawAudio(string.Join(' ', args));
 				using var audioStream = new MemoryStream(bytes);
 
 				PrepareOpenAL();
-
-#if !NO_PROCESSING
 				PrepareSteamAudio();
-#endif
 
 				const int NumBuffers = 2;
 
@@ -60,9 +60,14 @@ namespace Tests
 
 				stopwatch.Start();
 
+				// SteamAudio uses non-interlaced audio buffers, while OpenAL wants interlaced ones. This "array" is used for conversions.
+				tempInterlacingBuffer = Marshal.AllocHGlobal(AudioFrameSizeInBytes * 2);
+
 				void StreamBuffer(uint bufferId, Vector3 position)
 				{
-					var inputBufferByteSpan = new Span<byte>((void*)iplInputBuffer.data, AudioFrameSizeInBytes);
+					float* inputBufferChannelPtr = ((float**)iplInputBuffer.data)[0];
+					var inputBufferByteSpan = new Span<byte>(inputBufferChannelPtr, AudioFrameSizeInBytes);
+					//var inputBufferFloatSpan = new Span<float>(inputBufferChannelPtr, AudioFrameSize);
 					int bytesRead = audioStream.Read(inputBufferByteSpan);
 
 					// Loop the audio on stream end.
@@ -80,15 +85,13 @@ namespace Tests
 						spatialBlend = 1f,
 					};
 
-					var result = IPL.BinauralEffectApply(iplBinauralEffect, ref binauralEffectParams, ref iplInputBuffer, ref iplOutputBuffer);
+					IPL.BinauralEffectApply(iplBinauralEffect, ref binauralEffectParams, ref iplInputBuffer, ref iplOutputBuffer);
 
-					;
+					IPL.AudioBufferInterleave(iplContext, ref iplOutputBuffer, ref Unsafe.AsRef<float>((void*)tempInterlacingBuffer));
 
-					al.BufferData(bufferId, (BufferFormat)FloatBufferFormat.Stereo, (void*)iplOutputBuffer.data, AudioFrameSizeInBytes * 2, iplAudioSettings.samplingRate);
+					al.BufferData(bufferId, (BufferFormat)FloatBufferFormat.Stereo, (void*)tempInterlacingBuffer, AudioFrameSizeInBytes * 2, iplAudioSettings.samplingRate);
 #else
-					fixed (byte* frameInputBufferPtr = frameInputBuffer) {
-						al.BufferData(bufferId, (BufferFormat)FloatBufferFormat.Mono, frameInputBufferPtr, frameInputBuffer.Length, SamplingRate);
-					}
+					al.BufferData(bufferId, (BufferFormat)FloatBufferFormat.Mono, (void*)inputBufferChannelPtr, AudioFrameSizeInBytes, iplAudioSettings.samplingRate);
 #endif
 
 					CheckALErrors();
@@ -158,6 +161,10 @@ namespace Tests
 			}
 
 			try {
+				if (tempInterlacingBuffer != IntPtr.Zero) {
+					Marshal.FreeHGlobal(tempInterlacingBuffer);
+				}
+
 				UnloadSteamAudio();
 				UnloadOpenAL();
 			}
