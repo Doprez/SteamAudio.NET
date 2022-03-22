@@ -3,10 +3,36 @@
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<Platforms>AnyCPU</Platforms>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>SteamAudio.NET</AssemblyName>
 		<RootNamespace>SteamAudio</RootNamespace>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<IncludeContentInPack>true</IncludeContentInPack>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
+
+	<!-- Nuget -->
+	<PropertyGroup>
+		<PackageId>SteamAudio.NET</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Mirsario</Authors>
+		<Description>C#-friendly P/Invoke .NET bindings for Valve Software's Steam Audio (Phonon)</Description>
+		<PackageTags>SteamAudio Phonon C# F# .NET Audio Sound</PackageTags>
+		
+		<RepositoryType>Git</RepositoryType>
+		<RepositoryUrl>https://github.com/Mirsario/SteamAudio.NET</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/Mirsario/SteamAudio.NET</PackageProjectUrl>
+		
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<RequireLicenseAcceptance>true</RequireLicenseAcceptance>
+		<Copyright>Copyright (c) 2022 Mirsario</Copyright>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="..\LICENSE.md" PackagePath="LICENSE.md" />
+		<Content Include="..\Natives\steamaudio\lib\linux-x64\libphonon.so" PackagePath="runtimes\linux-x64\native\libphonon.so" />
+		<Content Include="..\Natives\steamaudio\lib\osx\libphonon.dylib" PackagePath="runtimes\osx-universal\native\libphonon.dylib" />
+		<Content Include="..\Natives\steamaudio\lib\windows-x64\phonon.dll" PackagePath="runtimes\win-x64\native\phonon.dll" />
+	</ItemGroup>
 
 </Project>
