@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="Versions.props" />
+	<Import Project="..\Shared.targets" />
 
+	<!-- General -->
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<Platforms>AnyCPU</Platforms>
@@ -9,39 +10,31 @@
 		<AssemblyName>SteamAudio.NET</AssemblyName>
 		<RootNamespace>SteamAudio</RootNamespace>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<!-- NuGet -->
+	<PropertyGroup>
+		<!-- Packaging -->
 		<IncludeContentInPack>true</IncludeContentInPack>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	</PropertyGroup>
 
-	<!-- Nuget -->
-	<PropertyGroup>
+		<!-- Metadata -->
 		<PackageId>SteamAudio.NET</PackageId>
-		<Version>$(SteamAudioBindingsVersion)</Version>
+		<Version>$(BindingsVersion)</Version>
 		<Authors>Mirsario</Authors>
 		<Description>C#-friendly P/Invoke .NET bindings for Valve Software's Steam Audio (Phonon)</Description>
 		<PackageTags>SteamAudio Phonon C# F# .NET Audio Sound</PackageTags>
-		
 		<RepositoryType>Git</RepositoryType>
 		<RepositoryUrl>https://github.com/Mirsario/SteamAudio.NET</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/Mirsario/SteamAudio.NET</PackageProjectUrl>
-		
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<RequireLicenseAcceptance>true</RequireLicenseAcceptance>
-		<Copyright>Copyright (c) 2022 Mirsario</Copyright>
 	</PropertyGroup>
 
+	<!-- Content -->
 	<ItemGroup>
 		<Content Include="..\LICENSE.md" PackagePath="LICENSE.md" />
-		<Content Include="..\Natives\steamaudio\lib\android-armv7\libphonon.so" PackagePath="runtimes\android-armv7\native\libphonon.so" />
-		<Content Include="..\Natives\steamaudio\lib\android-armv8\libphonon.so" PackagePath="runtimes\android-armv8\native\libphonon.so" />
-		<Content Include="..\Natives\steamaudio\lib\android-x64\libphonon.so" PackagePath="runtimes\android-x64\native\libphonon.so" />
-		<Content Include="..\Natives\steamaudio\lib\android-x86\libphonon.so" PackagePath="runtimes\android-x86\native\libphonon.so" />
-		<Content Include="..\Natives\steamaudio\lib\linux-x64\libphonon.so" PackagePath="runtimes\linux-x64\native\libphonon.so" />
-		<Content Include="..\Natives\steamaudio\lib\linux-x86\libphonon.so" PackagePath="runtimes\linux-x86\native\libphonon.so" />
-		<Content Include="..\Natives\steamaudio\lib\osx\libphonon.dylib" PackagePath="runtimes\osx-universal\native\libphonon.dylib" />
-		<Content Include="..\Natives\steamaudio\lib\windows-x64\phonon.dll" PackagePath="runtimes\win-x64\native\phonon.dll" />
-		<Content Include="..\Natives\steamaudio\lib\windows-x86\phonon.dll" PackagePath="runtimes\win-x86\native\phonon.dll" />
 	</ItemGroup>
 
 </Project>
