@@ -8,7 +8,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-		<RestoreSources>../Src/bin/$(Configuration);../Natives/bin/$(Configuration);$(RestoreSources)</RestoreSources>
+		<RestoreSources>../Src/bin/$(Configuration);../Natives/bin/$(Configuration);https://api.nuget.org/v3/index.json</RestoreSources>
 	</PropertyGroup>
 
 	<!-- References -->
