@@ -1,5 +1,7 @@
 # SteamAudio.NET
-[![NuGet](https://img.shields.io/nuget/v/SteamAudio.NET.svg)](https://www.nuget.org/packages/SteamAudio.NET)
+| Bindings | Natives |
+| -------- | ------- |
+| [![NuGet](https://img.shields.io/nuget/v/SteamAudio.NET.svg)](https://www.nuget.org/packages/SteamAudio.NET) | [![NuGet](https://img.shields.io/nuget/v/SteamAudio.NET.Natives.svg)](https://www.nuget.org/packages/SteamAudio.NET.Natives) |
 
 Auto-generated C#-friendly P/Invoke .NET bindings for Valve Software's [Steam Audio](https://valvesoftware.github.io/steam-audio/) (also known as 'Phonon'.)
 
