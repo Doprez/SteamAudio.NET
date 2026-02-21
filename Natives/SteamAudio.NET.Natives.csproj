@@ -39,6 +39,13 @@
 		<Content Include="..\Natives\steamaudio\lib\osx\**" PackagePath="runtimes\osx-universal\native\%(RecursiveDir)%(Filename)%(Extension)" />
 		<Content Include="..\Natives\steamaudio\lib\windows-x64\**" PackagePath="runtimes\win-x64\native\%(RecursiveDir)%(Filename)%(Extension)" />
 		<Content Include="..\Natives\steamaudio\lib\windows-x86\**" PackagePath="runtimes\win-x86\native\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- Placeholder so NuGet recognizes the package (needed since IncludeBuildOutput is false) -->
+		<Content Include="_._" PackagePath="lib\netstandard2.0\_._" />
+
+		<!-- .targets file to ensure native files are copied to output in consuming projects -->
+		<Content Include="build\SteamAudio.NET.Natives.targets" PackagePath="build\$(PackageId).targets" />
+		<Content Include="build\SteamAudio.NET.Natives.targets" PackagePath="buildTransitive\$(PackageId).targets" />
 	</ItemGroup>
 
 </Project>
