@@ -7,6 +7,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  STEAMAUDIO_VERSION: '4.8.1'
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -20,16 +23,30 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Download Steam Audio natives
+        run: |
+          curl -L -o steamaudio.zip "https://github.com/ValveSoftware/steam-audio/releases/download/v${{ env.STEAMAUDIO_VERSION }}/steamaudio_${{ env.STEAMAUDIO_VERSION }}.zip"
+          unzip -q steamaudio.zip -d Natives/
+          ls -R Natives/steamaudio/lib/
+
       - name: Restore dependencies
         run: |
           dotnet restore Src/SteamAudio.NET.csproj
           dotnet restore Natives/SteamAudio.NET.Natives.csproj
 
       - name: Build and Pack SteamAudio.NET
-        run: dotnet build Src/SteamAudio.NET.csproj -c Release -p:PackageId=Doprez.SteamAudio.NET -p:Version=4.8.1.${{ github.run_number }}
+        run: dotnet build Src/SteamAudio.NET.csproj -c Release -p:PackageId=Doprez.SteamAudio.NET -p:Version=${{ env.STEAMAUDIO_VERSION }}.${{ github.run_number }}
 
       - name: Build and Pack SteamAudio.NET.Natives
-        run: dotnet build Natives/SteamAudio.NET.Natives.csproj -c Release -p:PackageId=Doprez.SteamAudio.NET.Natives -p:Version=4.8.1.${{ github.run_number }}
+        run: dotnet build Natives/SteamAudio.NET.Natives.csproj -c Release -p:PackageId=Doprez.SteamAudio.NET.Natives -p:Version=${{ env.STEAMAUDIO_VERSION }}.${{ github.run_number }}
+
+      - name: Verify native content in package
+        run: |
+          echo "=== Checking nupkg contents ==="
+          for pkg in Natives/bin/Release/*.nupkg; do
+            echo "Contents of $pkg:"
+            unzip -l "$pkg" | grep -E "runtimes/.*native" || echo "WARNING: No native runtimes found in package!"
+          done
 
       - name: Push to NuGet
         run: |
